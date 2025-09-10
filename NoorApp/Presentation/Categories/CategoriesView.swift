@@ -2,14 +2,14 @@ import SwiftUI
 
 struct CategoriesView: View {
     @StateObject var viewModel: CategoriesViewModel
-    private let categories = ["Quran", "Hadith", "Scholar", "General"]
+    private let categories = QuoteCategory.allCases
 
     var body: some View {
         NavigationStack {
             List {
                 ForEach(categories, id: \.self) { category in
                     NavigationLink(destination: CategoryQuotesView(category: category, viewModel: viewModel)) {
-                        Text(category)
+                        Text(category.rawValue)
                             .font(.headline)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)

@@ -10,7 +10,7 @@ final class CategoriesViewModel: ObservableObject {
     }
 
     /// Loads all quotes for the provided category.
-    func quotes(for category: String) async -> [MotivationQuote] {
+    func quotes(for category: QuoteCategory) async -> [MotivationQuote] {
         await getQuotesByCategoryUseCase.execute(category: category)
     }
 }

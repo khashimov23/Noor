@@ -9,6 +9,6 @@ struct MotivationQuote: Identifiable, Codable, Equatable {
     let id: String
     let text: String
     let author: String
-    let category: String   // e.g. "Quran", "Hadith", "Scholar", "General"
+    let category: QuoteCategory   // e.g. "Quran", "Hadith", "Scholar", "General"
     let date: Date
 }

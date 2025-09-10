@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Displays all quotes for a given category.
 struct CategoryQuotesView: View {
-    let category: String
+    let category: QuoteCategory
     @ObservedObject var viewModel: CategoriesViewModel
     @State private var quotes: [MotivationQuote] = []
 
@@ -15,7 +15,7 @@ struct CategoryQuotesView: View {
             }
             .padding()
         }
-        .navigationTitle(category)
+        .navigationTitle(category.rawValue)
         .task {
             quotes = await viewModel.quotes(for: category)
         }
@@ -24,7 +24,7 @@ struct CategoryQuotesView: View {
 
 #Preview {
     CategoryQuotesView(
-        category: "Quran",
+        category: .quran,
         viewModel: CategoriesViewModel(getQuotesByCategoryUseCase: GetQuotesByCategoryUseCase(repository: LocalQuoteRepository()))
     )
 }

@@ -1,29 +1,39 @@
 import Foundation
 
+/// Errors that can occur while loading local quotes.
+enum QuoteRepositoryError: Error {
+    case fileNotFound
+}
+
 /// Repository that loads quotes from a bundled JSON file.
 struct LocalQuoteRepository: QuoteRepository {
-    private let quotes: [MotivationQuote]
+    private let bundle: Bundle
 
     init(bundle: Bundle = .main) {
-        if let url = bundle.url(forResource: "quotes", withExtension: "json"),
-           let data = try? Data(contentsOf: url) {
-            let decoder = JSONDecoder()
-            // Dates are stored as simple "yyyy-MM-dd" strings in the bundled JSON.
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            formatter.timeZone = TimeZone(secondsFromGMT: 0)
-            decoder.dateDecodingStrategy = .formatted(formatter)
-            quotes = (try? decoder.decode([MotivationQuote].self, from: data)) ?? []
-        } else {
-            quotes = []
+        self.bundle = bundle
+    }
+
+    func allQuotes() async throws -> [MotivationQuote] {
+        guard let url = bundle.url(forResource: "quotes", withExtension: "json") else {
+            throw QuoteRepositoryError.fileNotFound
         }
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        // Dates are stored as simple "yyyy-MM-dd" strings in the bundled JSON.
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        return try decoder.decode([MotivationQuote].self, from: data)
     }
 
-    func fetchQuotes() async -> [MotivationQuote] {
-        quotes
+    func randomQuote() async -> MotivationQuote? {
+        guard let quotes = try? await allQuotes() else { return nil }
+        return quotes.randomElement()
     }
 
-    func getQuotesByCategory(_ category: String) async -> [MotivationQuote] {
-        quotes.filter { $0.category == category }
+    func quotes(category: QuoteCategory) async -> [MotivationQuote] {
+        guard let quotes = try? await allQuotes() else { return [] }
+        return quotes.filter { $0.category == category }
     }
 }

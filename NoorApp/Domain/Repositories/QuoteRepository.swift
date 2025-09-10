@@ -3,8 +3,11 @@ import Foundation
 /// Abstraction for fetching quotes.
 protocol QuoteRepository {
     /// Retrieves all available quotes.
-    func fetchQuotes() async -> [MotivationQuote]
+    func allQuotes() async throws -> [MotivationQuote]
+
+    /// Returns a random quote if available.
+    func randomQuote() async -> MotivationQuote?
 
     /// Returns quotes matching a specific category.
-    func getQuotesByCategory(_ category: String) async -> [MotivationQuote]
+    func quotes(category: QuoteCategory) async -> [MotivationQuote]
 }

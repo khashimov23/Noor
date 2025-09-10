@@ -9,7 +9,7 @@ struct GetQuotesByCategoryUseCase {
     }
 
     /// Loads quotes for the given category.
-    func execute(category: String) async -> [MotivationQuote] {
-        await repository.getQuotesByCategory(category)
+    func execute(category: QuoteCategory) async -> [MotivationQuote] {
+        await repository.quotes(category: category)
     }
 }

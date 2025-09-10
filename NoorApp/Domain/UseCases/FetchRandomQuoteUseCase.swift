@@ -10,11 +10,11 @@ struct FetchRandomQuoteUseCase {
 
     /// Returns a random quote.
     /// - Parameter category: Optional category to filter by.
-    func execute(category: String? = nil) async -> MotivationQuote? {
-        let allQuotes = await repository.fetchQuotes()
-        let filtered = category.map { cat in
-            allQuotes.filter { $0.category == cat }
-        } ?? allQuotes
-        return filtered.randomElement()
+    func execute(category: QuoteCategory? = nil) async -> MotivationQuote? {
+        if let category = category {
+            return await repository.quotes(category: category).randomElement()
+        } else {
+            return await repository.randomQuote()
+        }
     }
 }
